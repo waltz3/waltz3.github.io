@@ -248,15 +248,15 @@ def parse_skills(skills_text):
     
     return skills_entries
 
-def parse_publications(pub_dir):
-    """Parse publications from the _publications directory."""
-    publications = []
+def parse_projects(proj_dir):
+    """Parse projects from the _projects directory."""
+    projects = []
     
-    if not os.path.exists(pub_dir):
-        return publications
+    if not os.path.exists(proj_dir):
+        return projects
     
-    for pub_file in sorted(glob.glob(os.path.join(pub_dir, "*.md"))):
-        with open(pub_file, 'r', encoding='utf-8') as file:
+    for proj_file in sorted(glob.glob(os.path.join(proj_dir, "*.md"))):
+        with open(proj_file, 'r', encoding='utf-8') as file:
             content = file.read()
         
         # Extract front matter
@@ -264,8 +264,8 @@ def parse_publications(pub_dir):
         if front_matter_match:
             front_matter = yaml.safe_load(front_matter_match.group(1))
             
-            # Extract publication details
-            pub_entry = {
+            # Extract project details
+            proj_entry = {
                 "name": front_matter.get('title', ''),
                 "publisher": front_matter.get('venue', ''),
                 "releaseDate": front_matter.get('date', ''),
@@ -273,9 +273,9 @@ def parse_publications(pub_dir):
                 "summary": front_matter.get('excerpt', '')
             }
             
-            publications.append(pub_entry)
+            projects.append(proj_entry)
     
-    return publications
+    return projects
 
 def parse_talks(talks_dir):
     """Parse talks from the _talks directory."""
@@ -386,8 +386,8 @@ def create_cv_json(md_file, config_file, repo_root, output_file):
         "references": []
     }
     
-    # Add publications
-    cv_json["publications"] = parse_publications(os.path.join(repo_root, "_publications"))
+    # Add projects
+    cv_json["projects"] = parse_projects(os.path.join(repo_root, "_projects"))
     
     # Add talks
     cv_json["presentations"] = parse_talks(os.path.join(repo_root, "_talks"))
